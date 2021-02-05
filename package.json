@@ -2,7 +2,10 @@
   "name": "language-factorio-cfg",
   "version": "0.0.0",
   "description": "Factorio cfg file grammar",
-  "engines": { "atom": "*" },
+  "engines": { "atom": ">=1.0.0 <2.0.0" },
   "license": "MIT",
+  "keywords": [
+    "factorio", "grammar", "cfg"
+  ],
   "repository": "https://github.com/ickputzdirwech/language-factorio-cfg"
 }
