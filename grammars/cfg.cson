@@ -1,0 +1,225 @@
+name: 'Factorio cfg highlight'
+scopeName: 'source.factorio-cfg'
+fileTypes: ['cfg']
+patterns: [
+  # Categories
+  {
+    match: '^(\\[)([^\\[]*)(\\])\n'
+    captures:
+      1: name: 'comment.factorio-cfg' # GREY # "["
+      2: name: 'keyword.operator.factorio-cfg' # PURPLE # name
+      3: name: 'comment.factorio-cfg' # GREY # "]"
+  }
+  # Strings and "="
+  {
+    match: '(^[^\\n;#=][^=]*)(\\=)'
+    captures:
+      1: name: 'string.unquoted.factorio-cfg' # GREEN # string
+      2: name: 'keyword.operator.factorio-cfg' # PURPLE # "="
+  }
+  # Comments with ";" or "#"
+  {
+    match: '^(\\;|#)(.*)'
+    name: 'comment.factorio-cfg' # GREY
+  }
+  # Numeric parameters
+  {
+    match: '(\\__)(1?[1-9]|[1-2]0)(\\__)'
+    name: 'meta.factorio-cfg'
+    captures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'variable.other.factorio-cfg' # RED # number
+      3: name: 'comment.factorio-cfg' # GREY # "__"
+  }
+  # Plural parameters
+  {
+    begin: '(\\__)(plural_for_parameter)(_)(1?[1-9]|[1-2]0)(_)(\\{)(ends in [0-9]*|[0-9]*)(\\=)'
+    beginCaptures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'variable.language.self.factorio-cfg' # RED
+      3: name: 'comment.factorio-cfg' # GREY # "_"
+      4: name: 'variable.language.self.factorio-cfg' # RED
+      5: name: 'comment.factorio-cfg' # GREY # "_"
+      6: name: 'variable.language.self.factorio-cfg' # RED # "{"
+      7: name: 'constant.numeric.factorio-cfg' # ORANGE
+      8: name: 'variable.language.self.factorio-cfg' # RED
+    end: '(\\})(__)'
+    endCaptures:
+      1: name: 'variable.language.self.factorio-cfg' # RED # "}"
+      2: name: 'comment.factorio-cfg' # GREY # "__"
+    patterns: [
+      {
+        match: '(\\|)((ends in )?[0-9]*|rest)(\\=)'
+        captures:
+          1: name: 'variable.language.self.factorio-cfg' # RED # "|"
+          2: name: 'constant.numeric.factorio-cfg' # ORANGE # "(ends in) number/rest"
+          4: name: 'variable.language.self.factorio-cfg' # RED
+      }
+      { include: '$self' }
+    ]
+  }
+  # Build in parameters
+  {
+    match: '(\\__)(\\ENTITY|ITEM|FLUID|CONTROL|ALT_CONTROL(\\__)([1-2])|CONTROL_MODIFIER)(\\__)([^_]*)(\\__)|(__)(CONTROL_MOVE)(__)'
+    captures:
+      1: name: 'comment.factorio-cfg' # GREY
+      2: name: 'variable.language.self.factorio-cfg' # RED
+      3: name: 'comment.factorio-cfg' # GREY
+      4: name: 'variable.language.self.factorio-cfg' # RED
+      5: name: 'comment.factorio-cfg' # GREY
+      6: name: 'string.unquoted.factorio-cfg' # GREEN
+      7: name: 'comment.factorio-cfg' # GREY
+      8: name: 'comment.factorio-cfg' # GREY
+      9: name: 'variable.language.self.factorio-cfg' # RED
+      10: name: 'comment.factorio-cfg' # GREY
+  }
+  # Line break
+  {
+    match: '\\\\n'
+    name: 'support.function.factorio-cfg' # TURQUOISE
+  }
+  # Control style
+  {
+    begin: '(\\__)(CONTROL_STYLE_BEGIN)(\\__)'
+    beginCaptures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "CONTROL_STYLE_BEGIN"
+      3: name: 'comment.factorio-cfg' # GREY # "__"
+    end: '(\\__)(CONTROL_STYLE_END)(\\__)'
+    endCaptures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "CONTROL_STYLE_END"
+      3: name: 'comment.factorio-cfg' # GREY # "__"
+    patterns: [{ include: '$self' }]
+  }
+  # Remark color
+  {
+    begin: '(\\__)(REMARK_COLOR_BEGIN)(\\__)'
+    beginCaptures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "REMARK_COLOR_BEGIN"
+      3: name: 'comment.factorio-cfg' # GREY # "__"
+    end: '(\\__)(REMARK_COLOR_END)(\\__)'
+    endCaptures:
+      1: name: 'comment.factorio-cfg' # GREY # "__"
+      2: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "REMARK_COLOR_END"
+      3: name: 'comment.factorio-cfg' # GREY # "__"
+    patterns: [{ include: '$self' }]
+  }
+  # Color predefined
+  {
+    begin: '(\\[color\\=)(default|red|green|blue|orange|yellow|pink|purple|white|black|gray|brown|cyan|acid)(\\])'
+    beginCaptures:
+      1: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "[color="
+      2: name: 'constant.numeric.factorio-cfg' # ORANGE # "color"
+      3: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "]"
+    end: '\\[(/|\\.)color\\]'
+    endCaptures: 0: name: 'constant.character.escape.factorio-cfg' # TURQUOISE
+    patterns: [{ include: '$self' }]
+
+  }
+  # Color custom
+  {
+    begin: '(\\[color\\=)((0(\\.[0-9]*)?|1(\\.0*)?)(,)(0(\\.[0-9]*)?|1(\\.0*)?)(,)((0(\\.[0-9]*)?|1(\\.0*)?))|((0|1[0-9]?[0-9]?|2[0-9]?|2[0-5][0-5])(,)(0|1[0-9]?[0-9]?|2[0-9]?|2[0-5][0-5])(,)(0|1[0-9]?[0-9]?|2[0-9]?|2[0-5][0-5]))|(#)[0-9a-fA-F]{6})(\\])'
+    beginCaptures:
+      1: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "[color="
+      2: name: 'constant.numeric.factorio-cfg' # ORANGE # rgb
+      #
+      6: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # ","
+      #
+      10: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # ","
+      #
+      17: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # ","
+      #
+      19: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # ","
+      #
+      21: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "#"
+      22: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "]"
+    end: '\\[(/|\\.)color\\]'
+    endCaptures: 0: name: 'constant.character.escape.factorio-cfg' # TURQUOISE
+    patterns: [{ include: '$self' }]
+  }
+  # Font
+  {
+    begin: '(\\[font\\=)(compi(latron-message-font)?|count-font|default(-bold|-dialog-button|-dropdown|-game|-large(-bold|-semibold)?|-listbox|-semibold|-small(-bold|-semibold)?|-tiny-bold)?|heading-[1-3]|locale-pick|scenario-message-dialog|technology-slot-level-font|var)?([^\\[]*)(\\])'
+    beginCaptures:
+      1: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "[color="
+      2: name: 'constant.numeric.factorio-cfg' # ORANGE # "font"
+      #
+      7: name: 'string.unquoted.factorio-cfg' # GREEN # string
+      8: name: 'constant.character.escape.factorio-cfg' # TURQUOISE # "]"
+    end: '\\[(/|\\.)font\\]'
+    endCaptures: 0: name: 'constant.character.escape.factorio-cfg' # TURQUOISE
+    patterns: [{ include: '$self' }]
+  }
+  # Icon tag
+  {
+    match: '(\\[)(img)(\\=)(item(-group)?|entity|technology|recipe|fluid|tile|virtual-signal|achievement|equipment|file|utility)(\\.|\\/)([^\\]]*)(\\])'
+    captures:
+      1: name: 'entity.name.section.factorio-cfg' # BLUE # "["
+      2: name: 'entity.name.section.factorio-cfg' # BLUE # "img"
+      3: name: 'entity.name.section.factorio-cfg' # BLUE # "="
+      4: name: 'constant.numeric.factorio-cfg' # ORANGE # class
+      #
+      6: name: 'entity.name.section.factorio-cfg' # BLUE # "," or "/"
+      7: name: 'string.unquoted.factorio-cfg' # GREEN # string
+      8: name: 'entity.name.section.factorio-cfg' # BLUE # "]"
+  }
+  # Tag with name
+  {
+    match: '(\\[)(img|item|entity|technology|recipe|item-group|fluid|tile|virtual-signal|achievement|armor|special-item)(\\=)([^\\]]*)(\\])'
+    captures:
+      1: name: 'entity.name.section.factorio-cfg' # BLUE # "["
+      2: name: 'entity.name.section.factorio-cfg' # BLUE # class
+      3: name: 'entity.name.section.factorio-cfg' # BLUE # "="
+      4: name: 'string.unquoted.factorio-cfg' # GREEN # string
+      5: name: 'entity.name.section.factorio-cfg' # BLUE # "]"
+  }
+  # GPS tag
+  {
+    match: '(\\[)(gps)(\\=)([0-9]*)(,)([0-9]*)((,)([^\\],]*))?(\\])'
+    captures:
+      1: name: 'entity.name.section.factorio-cfg' # BLUE # "["
+      2: name: 'entity.name.section.factorio-cfg' # BLUE # "gps"
+      3: name: 'entity.name.section.factorio-cfg' # BLUE # "="
+      4: name: 'constant.numeric.factorio-cfg' # ORANGE # x-coordinate
+      5: name: 'entity.name.section.factorio-cfg' # BLUE # ","
+      6: name: 'constant.numeric.factorio-cfg' # ORANGE # y-coordinate
+      #
+      8: name: 'entity.name.section.factorio-cfg' # BLUE # ","
+      9: name: 'string.unquoted.factorio-cfg' # GREEN # surface
+      10: name: 'entity.name.section.factorio-cfg' # BLUE # "]"
+  }
+  # Tag with number
+  {
+    match: '(\\[)(train|train-stop)(\\=)([0-9]*)(\\])'
+    captures:
+      1: name: 'entity.name.section.factorio-cfg' # BLUE # "["
+      2: name: 'entity.name.section.factorio-cfg' # BLUE # class
+      3: name: 'entity.name.section.factorio-cfg' # BLUE # "="
+      4: name: 'constant.numeric.factorio-cfg' # ORANGE # number
+      5: name: 'entity.name.section.factorio-cfg' # BLUE # "]"
+  }
+  # Tooltip tag
+  {
+    match: '(\\[)(tooltip)(\\=)([^,]*)(,)([^\\.]*)(\\.)([^\\]]*)(\\])'
+    captures:
+      1: name: 'entity.name.section.factorio-cfg' # BLUE # "["
+      2: name: 'entity.name.section.factorio-cfg' # BLUE # "tooltip"
+      3: name: 'entity.name.section.factorio-cfg' # BLUE # "="
+      4: patterns: [{ include: '$self' }] # text
+      5: name: 'entity.name.section.factorio-cfg' # BLUE # ","
+      6: name: 'keyword.operator.factorio-cfg' # PURPLE # category
+      7: name: 'entity.name.section.factorio-cfg' # BLUE # "."
+      8: name: 'string.unquoted.factorio-cfg' # GREEN # string
+      9: name: 'entity.name.section.factorio-cfg' # BLUE # "]"
+  }
+]
+
+# GREY: 'comment.factorio-cfg' # GREY
+# GREEN: 'string.unquoted.factorio-cfg' # GREEN
+# PURPLE: 'keyword.operator.factorio-cfg' # PURPLE
+# ORANGE: 'constant.numeric.factorio-cfg' # ORANGE
+# RED: 'variable.other.factorio-cfg' # RED
+# BLUE: 'entity.name.section.factorio-cfg' # BLUE
+# TURQUOISE: 'constant.character.escape.factorio-cfg' # TURQUOISE
